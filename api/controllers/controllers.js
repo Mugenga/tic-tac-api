@@ -10,30 +10,34 @@ exports.game = (req, res) => {
   // Check if query is empty
   if (board.length === 0) {
     res.status(400);
-    res.json({ error: "enter the board please" });
+    res.json("enter the board please");
   }
 
   if (board.length < 9) {
     res.status(400);
-    res.json({ error: "board incomplete" });
+    res.send("board incomplete");
   }
 
   if (ticTac.is_valid(board) === false) {
     res.status(400);
-    res.json({
-      error:
-        "Board contains invalid characters or Player o not allowed to nake a smove",
-    });
+    res.send(
+      "Board contains invalid characters or Player o not allowed to nake a move"
+    );
   }
 
   if (ticTac.is_game_tie(board) === true) {
     res.status(400);
-    res.json({ message: "It's a tie" });
+    res.send(board);
+  }
+
+  // Check if player won
+  if (ticTac.is_player_winner(board, "x")) {
+    res.json(board);
   }
 
   // Check if player won
   if (ticTac.is_player_winner(board, "o")) {
-    res.json({ message: "Player O won." });
+    res.send(board);
   }
 
   // Figuring out the next player
@@ -48,24 +52,28 @@ exports.game = (req, res) => {
     next_player = "o";
   }
 
-  // If next player is human (o)
+  // if next player is computer (o)
   let curr_move;
+  console.log("computer move start");
+  console.log("-------------------");
   console.log("Board Before: " + board);
   if (next_player == "o") {
     // Get Move
     curr_move = ticTac.get_move(board, "o");
     let newBoard = board.split("");
 
+    newBoard[curr_move] = "o";
+
     console.log("Move index " + curr_move);
     console.log("Board After: " + newBoard);
 
     const next_board = newBoard.join("");
-    res.json({ next_board: next_board });
+    res.send(next_board);
   }
 
-  // if next player is computer (x)
+  // If next player is human (x)
   if (next_player == "x") {
     const prospective_board = ticTac.get_prospective_board(board, next_player);
-    res.json({ next_board: prospective_board });
+    res.send(prospective_board);
   }
 };

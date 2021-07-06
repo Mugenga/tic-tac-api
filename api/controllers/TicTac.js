@@ -86,8 +86,8 @@ module.exports = class TicTac {
 
   get_move(board, player) {
     //Given a board and the computer's letter, determine where to move and return that move.
-    const human = "o";
-    const computer = "x";
+    const human = "x";
+    const computer = "o";
 
     // Game Algorithm
 
@@ -96,9 +96,12 @@ module.exports = class TicTac {
       // Get a copy of the array
       let copy = board.slice();
       if (!this.is_game_tie(copy)) {
-        this.makeMove(copy, computer, i);
-        if (this.is_player_winner(copy, computer)) {
-          return i;
+        if(copy[i] === " "){
+          copy = this.makeMove(copy, computer, i);
+          if (this.is_player_winner(copy, computer)) {
+            console.log("Computer Can Win");
+            return i;
+          }
         }
       }
     }
@@ -107,16 +110,20 @@ module.exports = class TicTac {
     for (let i = 0; i <= 8; i++) {
       let copy = board.slice();
       if (!this.is_game_tie(copy)) {
-        this.makeMove(copy, human, i);
-        if (this.is_player_winner(copy, human)) {
-          return i;
+        console.log(copy[i])
+        if(copy[i] === " "){
+          copy = this.makeMove(copy, human, i);
+          if (this.is_player_winner(copy, human)) {
+            console.log("Human Can Win");
+            return i;
+          }
         }
       }
     }
 
     // Try to take one of the corners, if they are free.
     let move = this.chooseRandomMoveFromList(board, [0, 3, 7, 8]);
-    if (move !== "") {
+    if (move !== " ") {
       return move;
     }
     // Try to take the center, if it is free.
@@ -127,7 +134,10 @@ module.exports = class TicTac {
     return this.chooseRandomMoveFromList(board, [2, 4, 6, 8]);
   }
 
-  chooseRandomMoveFromList(board, list) {
+  chooseRandomMoveFromList(board, list) {  
+     //oxx
+     // ox 
+     // o 
     let possibleMoves = [];
 
     for (let i = 0; i < list.length; i++) {
@@ -149,5 +159,6 @@ module.exports = class TicTac {
   makeMove(board, char, move) {
     board = board.split("");
     board[move] = char;
+    return board;
   }
 };
